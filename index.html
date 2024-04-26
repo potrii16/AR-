@@ -1,4 +1,4 @@
- <!doctype HTML>
+<!doctype HTML>
 <html>
 <head>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
@@ -53,6 +53,10 @@
       AFRAME.registerComponent('click-listener', {
         init: function() {
           this.el.addEventListener('click', function() {
+            alert('Button clicked');
+          });
+          // Handle touch events to trigger alert on mobile devices
+          this.el.addEventListener('touchend', function() {
             alert('Button clicked');
           });
         }
