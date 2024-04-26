@@ -52,7 +52,7 @@
 
     AFRAME.registerComponent('white-cube-listener', {
       init: function() {
-        // Handle touchend event for white cube
+        // Use arrow function for better 'this' binding
         this.el.addEventListener('touchend', () => {
           alert('White cube clicked!');
         });
