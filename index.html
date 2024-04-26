@@ -52,9 +52,17 @@
 
     AFRAME.registerComponent('white-cube-listener', {
       init: function() {
-        // Use arrow function for better 'this' binding
-        this.el.addEventListener('touchend', () => {
-          alert('White cube clicked!');
+        const whiteCube = document.getElementById('whiteCube');
+        const scene = this.el.sceneEl;
+
+        scene.addEventListener('click', (evt) => {
+          const raycaster = new THREE.Raycaster();
+          raycaster.setFromCamera(evt.detail.camera, scene);
+          const intersects = raycaster.intersectObjects(scene.querySelectorAll('a-box'));
+
+          if (intersects.length > 0 && intersects[0].object === whiteCube) {
+            alert('White cube clicked!');
+          }
         });
       }
     });
@@ -64,10 +72,11 @@
 <a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false;'>
   <a-marker preset='hiro'>
     <a-box position="0 0.5 0" rotation="0 0 0" material="color: red; opacity: 0.5" touch-rotate>
-      <a-box position="0 0.55 0" rotation="0 0 0" material="color: white; opacity: 1" scale="0.2 0.2 0.2" white-cube-listener></a-box>
+      <a-box id="whiteCube" position="0 0.55 0" rotation="0 0 0" material="color: white; opacity: 1" scale="0.2 0.2 0.2" white-cube-listener></a-box>
     </a-box>
   </a-marker>
   <a-entity camera></a-entity>
 </a-scene>
 </body>
 </html>
+
