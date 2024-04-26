@@ -1,20 +1,59 @@
 <!doctype HTML>
 <html>
-<script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
+<script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script> <!-- Updated to a newer version of A-Frame -->
 <script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
 <body style='margin: 0px; overflow: hidden;'>
 <a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false;'>
-    <a-marker preset='custom' url='pattern.patt'>
-        <!-- No change to this green box -->
-        <a-box position='0 0.5 0' material='color: green; opacity: 0.5'></a-box>
-    </a-marker>
     <a-marker preset='hiro'>
-        <!-- Changed to darker red and more opaque -->
-        <a-box position='0 0.5 0' rotation='0 0 0' material='color: #8B0000; opacity: 1'
-               animation="property: rotation; to: 0 360 0; loop: true; dur: 10000">
+        <a-box position='0 0.5 0' rotation='0 0 0' scale="1 1 1" material='color: #8B0000; opacity: 1'
+               class="interactive-rotation">
         </a-box>
     </a-marker>
     <a-entity camera></a-entity>
 </a-scene>
+<script>
+  AFRAME.registerComponent('interactive-rotation', {
+    init: function () {
+      this.el.addEventListener('mousedown', (event) => {
+        this.handleStart(event);
+      });
+      this.el.addEventListener('mousemove', (event) => {
+        this.handleMove(event);
+      });
+      this.el.addEventListener('mouseup', () => {
+        this.handleEnd();
+      });
+      this.el.addEventListener('mouseleave', () => {
+        this.handleEnd();
+      });
+
+      this.startX = 0;
+      this.startY = 0;
+      this.initialRotation = null;
+    },
+    handleStart: function (event) {
+      this.startX = event.clientX;
+      this.startY = event.clientY;
+      this.initialRotation = this.el.getAttribute('rotation');
+    },
+    handleMove: function (event) {
+      if (!this.initialRotation) return;
+
+      const currentX = event.clientX;
+      const currentY = event.clientY;
+      const deltaX = (currentX - this.startX) * 0.5;
+      const deltaY = (currentY - this.startY) * 0.5;
+
+      this.el.setAttribute('rotation', {
+        x: this.initialRotation.x + deltaY,
+        y: this.initialRotation.y + deltaX,
+        z: this.initialRotation.z
+      });
+    },
+    handleEnd: function () {
+      this.initialRotation = null;
+    }
+  });
+</script>
 </body>
 </html>
